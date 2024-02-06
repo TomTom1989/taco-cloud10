@@ -1,0 +1,81 @@
+DOCKER DEPLOYMENT IN KUBERNETES (Using Kind)
+
+===Useful CLI instructions:============
+
+kind get clusters
+
+kind load docker-image myappagain3:latest --name my-cluster
+
+kubectl get deployments
+
+kubectl get pods
+
+kubectl delete deployment taco-cloud-deployment
+
+kubectl apply -f "C:\Users\twalciszewski\Desktop\DESKTOP FILES\deployment.yaml"
+
+kubectl port-forward pod/taco-cloud-deployment-67b44cc4f5-2576p 9000:9000
+
+
+
+
+=====================the deployment.yaml file==============================:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taco-cloud-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: taco-cloud
+  template:
+    metadata:
+      labels:
+        app: taco-cloud
+    spec:
+      containers:
+      - name: tacocloud-container
+        image: myappagain5:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9000
+        
+
+
+
+===(get some issues with this one:)=============
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taco-cloud-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: taco-cloud
+  template:
+    metadata:
+      labels:
+        app: taco-cloud
+    spec:
+      containers:
+      - name: tacocloud-container
+        image: myappagain3:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9000
+        livenessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          httpGet:
+            path: /actuator/health/liveness
+            port: 9000
+        readinessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          httpGet:
+            path: /actuator/health/readiness
+            port: 9000

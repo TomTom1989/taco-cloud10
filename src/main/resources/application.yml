@@ -1,0 +1,53 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        data: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      settings: 
+        web-allow-others: true
+  sql:
+    init:
+      mode: always
+      platform: h2
+      scripts: classpath:schema.sql,classpath:data.sql
+  data:
+    rest:
+      base-path: /data-api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,liveness,readiness 
+  health:
+    probes:
+      enabled: true 
+
+server:
+  port: 9000
+  shutdown: graceful
